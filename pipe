@@ -1,0 +1,34 @@
+working code for project techmasters.
+pipeline{
+    agent any
+    tools{
+        gradle 'gradle-7.3.3'
+    }
+    stages{
+        stage('checkout') {
+            steps {
+                git branch: 'main', url : 'https://github.com/shanmukh2039/springboot-tomcat-gradle-war.git'
+            }
+        }
+        stage ('Build') {
+            steps { 
+                sh 'gradle clean build'
+            }
+        }
+    stage("sonar quality check"){
+			steps{
+				script{
+					withSonarQubeEnv (credentialsId: 'sonar-token') {
+							sh 'gradle sonarqube'
+					}
+					timeout (time: 1, unit: 'HOURS') {
+						def qg = waitForQualityGate ()
+						if (qg.status != 'OK') {
+						error "Pipeline aborted due to quality gate failure: ${qg.status}"
+						}
+					}
+				}
+			}
+		}
+    }
+}
