@@ -1,3 +1,8 @@
+ref other project git gradle link 
+
+https://github.com/jabedhasan21/java-hello-world-with-gradle
+
+
 working code for project techmasters.
 pipeline{
     agent any
